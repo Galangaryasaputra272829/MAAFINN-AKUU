@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aku Minta Maaf Ya... 🥺❤️</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .font-cursive {
+            font-family: 'Caveat', cursive;
+        }
+
+        /* Glassmorphism Styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Floating Sad/Heart Particles Background Animation */
+        .particle-bg {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 6s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.3) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Envelope Pulsing Animation */
+        .envelope-bounce {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-12px) scale(1.05); }
+            60% { transform: translateY(-6px) scale(1.02); }
+        }
+
+        /* Floating Button Animation */
+        .pulse-btn {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 relative select-none">
+
+    <!-- Bekas Zarah Latar Belakang -->
+    <div id="particle-container" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+    <!-- Butang Kawalan Muzik Latar -->
+    <button id="music-toggle" class="fixed top-4 right-4 z-50 bg-white/80 backdrop-blur p-3 rounded-full shadow-lg text-indigo-600 hover:scale-110 transition duration-300">
+        <i id="music-icon" class="fas fa-volume-mute text-xl"></i>
+    </button>
+
+    <!-- KANDUNGAN UTAMA / KAD PERMOHONAN MAAF -->
+    <main class="w-full max-w-md z-10 relative">
+
+        <!-- FASA 1: Amplop Kejutan Permohonan Maaf -->
+        <div id="stage-1" class="glass-card rounded-3xl p-8 text-center transition-all duration-500 transform hover:scale-[1.01]">
+            <div class="mb-6 relative inline-block">
+                <div class="w-24 h-24 bg-rose-500 text-white rounded-full flex items-center justify-center mx-auto shadow-xl cursor-pointer envelope-bounce" onclick="nextStage(2)">
+                    <i class="fas fa-envelope-open text-4xl"></i>
+                </div>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Ada Surat Buat Kamu... 🥺</h1>
+            <p class="text-sm text-gray-600 mb-6">Jangan dimarahin dulu ya, buka dan baca dulu suratnya...</p>
+            <button onclick="nextStage(2)" class="w-full py-3.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-semibold rounded-2xl shadow-lg hover:from-rose-600 hover:to-pink-600 transition duration-300 pulse-btn">
+                Buka Surat Maaf ✨
+            </button>
+        </div>
+
+        <!-- FASA 2: Ungkapan Penyesalan & Teks Mesin Taip -->
+        <div id="stage-2" class="glass-card rounded-3xl p-8 text-center hidden transition-all duration-500">
+            <div class="w-20 h-20 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                <i class="fas fa-sad-tear animate-pulse"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Aku Minta Maaf Banget... 😔</h2>
+            <div class="min-h-[140px] bg-white/60 rounded-2xl p-4 shadow-inner mb-6 flex items-center justify-center border border-white/80">
+                <p id="typewriter-text" class="text-gray-700 font-medium text-sm leading-relaxed text-left"></p>
+            </div>
+            <button id="btn-continue" onclick="nextStage(3)" class="w-full py-3.5 bg-rose-500 text-white font-semibold rounded-2xl shadow-lg hover:bg-rose-600 transition duration-300 opacity-0 pointer-events-none transition-opacity duration-500">
+                Lanjut Baca 🥺 👉
+            </button>
+        </div>
+
+        <!-- FASA 3: Pilihan Dimaafkan / Butang Mengelak -->
+        <div id="stage-3" class="glass-card rounded-3xl p-8 text-center hidden transition-all duration-500 relative min-h-[380px] flex flex-col justify-between">
+            <div>
+                <div class="text-5xl mb-3 animate-bounce">🥺👉👈</div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Kamu Mau Maafin Aku Gak?</h2>
+                <p class="text-xs text-gray-500">Jangan marah lagi ya, aku janji bakal perbaiki semuanya! 🙏</p>
+            </div>
+
+            <!-- Bekas Butang Pilihan -->
+            <div class="relative w-full h-36 my-4 flex items-center justify-center gap-4" id="button-area">
+                <!-- Butang TERIMA (Mau Maafin) -->
+                <button id="btn-maaf" onclick="acceptApology()" class="px-6 py-3 bg-emerald-500 text-white font-bold rounded-2xl shadow-xl hover:bg-emerald-600 hover:scale-105 transition duration-300 z-20">
+                    Iya, Aku Maafin! ❤️
+                </button>
+
+                <!-- Butang TOLAK (Gak Mau) - Akan melari/pindah lokasi -->
+                <button id="btn-gak" class="px-6 py-3 bg-rose-400 text-white font-bold rounded-2xl shadow-md transition-all duration-200 z-20 absolute">
+                    Gak Mau 😜
+                </button>
+            </div>
+
+            <p class="text-xs text-rose-400 font-medium italic">*Petunjuk: Tombol 'Gak Mau' gak bisa ditekan lho... 😉</p>
+        </div>
+
+        <!-- FASA 4: Paparan Kejayaan & Balasan WhatsApp -->
+        <div id="stage-4" class="glass-card rounded-3xl p-8 text-center hidden transition-all duration-500">
+            <div class="text-6xl mb-4 animate-bounce">😭💖</div>
+            <h2 class="text-3xl font-cursive font-bold text-rose-600 mb-2">Makasih Banyak Ya Sayang!</h2>
+            <p class="text-gray-700 text-sm mb-6 leading-relaxed">
+                Makasih udah mau maafin kesalahan aku. Janji deh gak bakal bikin kamu kesel atau sedih lagi! 🥹
+            </p>
+
+            <!-- Foto / Stiker Comel -->
+            <div class="w-full h-44 bg-pink-100 rounded-2xl overflow-hidden mb-6 shadow-md flex items-center justify-center relative">
+                <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80" alt="Ikon Pelukan Kasih Sayang" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-3">
+                    <span class="text-white text-xs font-semibold">Janji Gak Bikin Kesel Lagi ✨</span>
+                </div>
+            </div>
+
+            <!-- Butang Hantar Pesan Ke WhatsApp -->
+            <button onclick="sendToWhatsApp()" class="w-full py-3.5 bg-emerald-500 text-white font-bold rounded-2xl shadow-lg hover:bg-emerald-600 transition duration-300 flex items-center justify-center gap-2">
+                <i class="fab fa-whatsapp text-2xl"></i>
+                Kirim Pesan Maaf ke WhatsApp
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Audio Efek Muzik Latar Belakang (Lofi Sedih / Manis Bebas Hak Cipta) -->
+    <audio id="bg-music" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-loving-you-117.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Pilihan Elemen
+        const bgMusic = document.getElementById('bg-music');
+        const musicToggle = document.getElementById('music-toggle');
+        const musicIcon = document.getElementById('music-icon');
+        let isPlayingMusic = false;
+
+        // Kawalan Muzik
+        musicToggle.addEventListener('click', toggleMusic);
+
+        function toggleMusic() {
+            if (isPlayingMusic) {
+                bgMusic.pause();
+                musicIcon.classList.remove('fa-music');
+                musicIcon.classList.add('fa-volume-mute');
+            } else {
+                bgMusic.play().catch(() => {});
+                musicIcon.classList.remove('fa-volume-mute');
+                musicIcon.classList.add('fa-music');
+            }
+            isPlayingMusic = !isPlayingMusic;
+        }
+
+        // Penjanaan Zarah Latar Belakang (Hati & Emotikon)
+        function createParticleBg() {
+            const container = document.getElementById('particle-container');
+            const particle = document.createElement('div');
+            particle.classList.add('particle-bg');
+            
+            const icons = ['🥹', '🥺', '❤️', '✨', '🌸', '💔'];
+            particle.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+            
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            particle.style.fontSize = (Math.random() * 15 + 15) + 'px';
+            
+            container.appendChild(particle);
+            setTimeout(() => particle.remove(), 7000);
+        }
+        setInterval(createParticleBg, 400);
+
+        // Kawalan Fasa (Stage Switcher)
+        function nextStage(stageNumber) {
+            // Mainkan muzik secara automatik pada fasa pertama
+            if (!isPlayingMusic) {
+                toggleMusic();
+            }
+
+            // Sembunyikan semua fasa
+            for (let i = 1; i <= 4; i++) {
+                const stage = document.getElementById(`stage-${i}`);
+                if (stage) stage.classList.add('hidden');
+            }
+
+            // Tunjukkan fasa sasaran
+            const targetStage = document.getElementById(`stage-${stageNumber}`);
+            if (targetStage) {
+                targetStage.classList.remove('hidden');
+            }
+
+            // Mula animasi mesin taip jika di Fasa 2
+            if (stageNumber === 2) {
+                startTypewriter();
+            }
+
+            // Tetapkan kedudukan awal butang Gak di Fasa 3
+            if (stageNumber === 3) {
+                resetGakButtonPosition();
+            }
+        }
+
+        // Teks Mesin Taip (Surat Permohonan Maaf)
+        const apologyText = "Halo sayang... Aku mau minta maaf ya atas kesalahan aku kemarin. Aku sadar banget udah bikin kamu kesel, sedih, atau kecewa. Aku ga bermaksud sama sekali bikin kamu sakit hati. Janji deh, aku bakal berusaha perbaiki dan ga ngulangin lagi... 🥺❤️";
+        let textIndex = 0;
+
+        function startTypewriter() {
+            const el = document.getElementById('typewriter-text');
+            const btnContinue = document.getElementById('btn-continue');
+            el.innerHTML = '';
+            textIndex = 0;
+
+            function type() {
+                if (textIndex < apologyText.length) {
+                    el.innerHTML += apologyText.charAt(textIndex);
+                    textIndex++;
+                    setTimeout(type, 40);
+                } else {
+                    btnContinue.classList.remove('opacity-0', 'pointer-events-none');
+                }
+            }
+            type();
+        }
+
+        // Logik Butang 'GAK MAU' Melari / Teleport
+        const btnGak = document.getElementById('btn-gak');
+        const buttonArea = document.getElementById('button-area');
+
+        function resetGakButtonPosition() {
+            btnGak.style.position = 'relative';
+            btnGak.style.left = '0px';
+            btnGak.style.top = '0px';
+            btnGak.style.transform = 'none';
+        }
+
+        function dodgeButton() {
+            const randomX = (Math.random() - 0.5) * (window.innerWidth < 400 ? 180 : 250);
+            const randomY = (Math.random() - 0.5) * 110;
+
+            btnGak.style.position = 'absolute';
+            btnGak.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        // Acara tetikus & sentuhan untuk butang melari
+        btnGak.addEventListener('mouseover', dodgeButton);
+        btnGak.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            dodgeButton();
+        });
+        btnGak.addEventListener('click', dodgeButton);
+
+        // Logik Dimaafkan (Accept Apology)
+        function acceptApology() {
+            // Letupan Bunga Api Konfeti
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 7,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff4d4d', '#34d399', '#60a5fa', '#ffffff']
+                });
+                confetti({
+                    particleCount: 7,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff4d4d', '#34d399', '#60a5fa', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+
+            // Pindah ke Fasa 4
+            nextStage(4);
+        }
+
+        // Logik Hantar Pesan Maaf ke WhatsApp
+        function sendToWhatsApp() {
+            // Ganti dengan nomor WhatsApp kamu (contoh: 628123456789)
+            const phoneNumber = "6285749462044"; 
+            const text = "Iyaaa aku udah maafin kamu kok! 🥺❤️ Tapi janji ya jangan diulangin lagi!";
+            const encodedText = encodeURIComponent(text);
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedText}`, '_blank');
+        }
+    </script>
+</body>
+</html>
+
+
